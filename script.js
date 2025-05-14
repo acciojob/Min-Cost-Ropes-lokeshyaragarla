@@ -1,36 +1,26 @@
-function DescendingSort(jsonArray) {
-    try {
-        // Parse the input JSON array
-        const books = JSON.parse(jsonArray);
+function mincost(arr) {
+  if (arr.length <= 1) return 0;
 
-        // Check if the parsed result is an array
-        if (!Array.isArray(books)) {
-            throw new Error("Input is not a valid JSON array.");
-        }
+  // Min heap using a priority queue pattern
+  const heap = [...arr];
+  heap.sort((a, b) => a - b); // initial heapify
 
-        // Sort the array based on libraryID in descending order
-        books.sort((a, b) => b.libraryID - a.libraryID);
+  let totalCost = 0;
 
-        // Map the sorted array to the desired output format
-        const result = books.map(book => `${book.title}-${book.author}-${book.libraryID}`);
+  while (heap.length > 1) {
+    // Pop two smallest elements
+    const first = heap.shift();
+    const second = heap.shift();
 
-        return result;
-    } catch (error) {
-        console.error("Error parsing JSON:", error.message);
-        return [];
-    }
+    const cost = first + second;
+    totalCost += cost;
+
+    // Insert the combined rope back into the heap
+    heap.push(cost);
+    heap.sort((a, b) => a - b); // Re-heapify
+  }
+
+  return totalCost;
 }
 
-// Example usage with input reading
-const readline = require('readline');
-
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-});
-
-rl.on('line', (line) => {
-    const sortedBooks = DescendingSort(line);
-    sortedBooks.forEach(book => console.log(book));
-    rl.close();
-});
+module.exports = mincost;
